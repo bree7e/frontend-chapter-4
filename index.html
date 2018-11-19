@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="shower-isp/styles/styles.css" />
-    <!-- В том числе заголовки выше -->
     <style>
       .shower {
         --slide-ratio: calc(4 / 3);
@@ -44,18 +43,7 @@
         <li>Вычислительные задачи</li>
       </ul>
       <p><b>Не работают с разметкой html</b></p>
-    </section>
-
-    <section class="slide">
-      <h2>Сервисы в Angular</h2>
-      <ul>
-        Задачи:
-        <li>Работа с данными</li>
-        <li>Взаимодействие между компонентами</li>
-        <li>Вычислительные задачи</li>
-      </ul>
-      <p><b>Не работают с разметкой html</b></p>
-      <ul>
+      <ul class="next">
         Реальные примеры:
         <li>NgISPUINotificationService - создание уведомлений пользователя</li>
         <li>VeppAPIDbService - запросы связанные с базами данных</li>
@@ -65,7 +53,7 @@
     <section class="slide">
       <h2>Создание сервиса</h2>
       <pre>Команда:<code>ng g service student</code></pre>
-      <pre>
+      <pre class="next">
         <code>import { Injectable } from '@angular/core';</code>
         <code> </code>
         <code><mark>@Injectable</mark>({</code>
@@ -167,21 +155,31 @@
         <code>  useClass: <mark class="important">StudentService</mark>, <span class="comment">&lt;== класс</code>
         <code>}]</code>
       </pre>
-      <p>Синтаксический «сахар»</p>
-      <pre>
+      <pre class="next">
+        Синтаксический «сахар»
         <code>providers: [StudentService]</code>
       </pre>      
     </section>
 
     <section class="slide">
-      <h2>Провайдер константы</h2>
-      <p>Создание токена:</p> 
+      <h2>Провайдер класса</h2>
       <pre>
+        <code>providers: [{</code>
+        <code>  provide: <mark>StudentService</mark>, <span class="comment">&lt;== ключ (просто строка)</code>
+        <code>  useClass: <mark class="important">TestService</mark>, <span class="comment">&lt;== другой класс</code>
+        <code>}]</code>
+      </pre>    
+      <p>Механизм внедрения позволяет подменить пробрасываемый класс</p> 
+    </section>
+
+    <section class="slide">
+      <h2>Провайдер константы</h2>
+      <pre>Создание токена:
         <code>import { InjectionToken } from '@angular/core';</code>
         <code>const sToken = new InjectionToken<string>('блюдо');</code>
       </pre>
-      <p>Использование токена:</p> 
-      <pre>
+      <pre  class="next">
+        Использование токена:
         <code>providers: [{</code>
         <code>  provide: <mark>sToken</mark>, <span class="comment">&lt;== ключ (имя InjectionToken)</code>
         <code>  useValue: 'Пирожок', <span class="comment">&lt;== значение</code>
@@ -192,11 +190,11 @@
     <section class="slide">
       <h2>Injector</h2>
         <p>
-            Инжектор — <b>механизм</b>. Angular создает инжектор для всего приложения во время bootstrap 
-            процесса и дополнительные инжекторы по мере необходимости. Вам не нужно создавать инжекторы.
+            Инжектор — <b>механизм</b>
         </p>
+        <img src="./pictures/injector-injects.png" alt="Инжектор зависимостей">
         <p>
-            Инжектор находит зависимости по ключу, создаёт их и поддерживает <i>контейнер</i> экземпляров зависимостей, которые он реиспользует, если это возможно.
+            Инжектор находит зависимости по ключу и создаёт их. Поддерживает <i>контейнер</i> экземпляров зависимостей, которые он переиспользует, если это возможно.
         </p>
     </section>
 
@@ -207,178 +205,76 @@
         <code>constructor(@Inject(<mark>sToken</mark>) private _dish) {}</code>
         <code>constructor(@Inject(<mark>StudentService</mark>) private _sService) {}</code>
       </pre>
-      <pre>
+      <pre class="next">
         В случае класса может использоваться без декоратора
         <code>constructor(private _sService: <mark>StudentService</mark>) {}</code>
       </pre>     
-      <blockquote> 
+      <blockquote class="next"> 
         <p>Запись означает: Внедрить <code>StudentService</code> в переменную <code>_sService</code></p>
       </blockquote>
     </section>
 
     <section class="slide">
-      <h2>Three Lists</h2>
-      <div class="columns three">
-        <ul>
-          <li>Skateboard pork belly aesthetic hoodie selfies brunch.</li>
-          <li>You probably haven’t heard of them.</li>
-        </ul>
-        <ul>
-          <li>Food truck gluten-free Portland.</li>
-          <li>
-            Helvetica narwhal drinking vinegar chillwave, post-ironic ennui
-          </li>
-        </ul>
-        <ul>
-          <li>Cray pug paleo retro, Echo Park narwhal Wes Anderson</li>
-          <li>Disrupt fixie, shabby chic bicycle rights hashtag kogi</li>
-        </ul>
-      </div>
+      <h2>Конфигурация провайдеров</h2>
+      <p>
+        Провайдеры могут конфигурироваться на трех уровнях приложения, путём задания метаданных в декораторах:
+      </p>
+      <ul>
+        <li><code>@Injectable()</code> - на уровне сервиса (через <i>providedIn</i>)</li>
+        <li><code>@NgModule()</code> - на уровен модуля NgModule (через <i>providers</i>)</li>
+        <li><code>@Component()</code> - на уровне компонента (через <i>providers</i>)</li>
+      </ul>
+      <a href="https://angular.io/guide/hierarchical-dependency-injection#where-to-configure-providers">Where to configure providers</a>
     </section>
 
     <section class="slide">
-      <h2>Striped Table</h2>
-      <table class="striped">
-        <tr>
-          <th scope="col">Gentrify</th>
-          <th>Twee</th>
-          <th>Artisan</th>
-          <th>Banksy</th>
-        </tr>
-        <tr>
-          <th scope="row">Messenger</th>
-          <td>Mixtape</td>
-          <td>Small batch</td>
-          <td>Bicycle rights</td>
-        </tr>
-        <tr>
-          <th scope="row">Meggings</th>
-          <td>Freegan</td>
-          <td>Retro biodiesel</td>
-          <td>Slow-carb</td>
-        </tr>
-        <tr>
-          <th scope="row">Vegan</th>
-          <td>Occupy</td>
-          <td>Normcore</td>
-          <td>Put a bird on it</td>
-        </tr>
-        <tr>
-          <th scope="row">Next level</th>
-          <td>Selfies</td>
-          <td>Sustainable</td>
-          <td>Organic</td>
-        </tr>
-        <tr>
-          <th scope="row">Umami</th>
-          <td>Asymmetrical</td>
-          <td>Keytar</td>
-          <td>Craft beer</td>
-        </tr>
-        <tr>
-          <th scope="row">Biodiesel</th>
-          <td>Haven’t heard</td>
-          <td>Skateboard</td>
-          <td>Farm-to-table</td>
-        </tr>
-      </table>
-    </section>
-
-    <section class="slide">
-      <h2>Plain Code Listing</h2>
-      <pre><code>&lt;html lang="en"&gt;
-<mark>&lt;head&gt;</mark> <span class="comment">&lt;!--Comment--&gt;</span>
-    &lt;title&gt;Shower&lt;/title&gt;
-    &lt;meta charset="<mark class="important">UTF-8</mark>"&gt;
-    &lt;link rel="stylesheet" href="screen.css"&gt;
-    &lt;script src="script.js"&gt;&lt;/script&gt;
-<mark>&lt;/head&gt;</mark></code></pre>
-    </section>
-    <section class="slide">
-      <h2>Numbered Code Listing</h2>
+      <h2>@Injectable()</h2>
+      <p><b>Рекомендуемый</b> способ регистрации провайдера.</p>
       <pre>
-            <code>&lt;html lang="en"&gt;</code>
-            <code><mark>&lt;head&gt;</mark> <span class="comment">&lt;!--Comment--&gt;</span></code>
-            <code>    &lt;title&gt;Shower&lt;/title&gt;</code>
-            <code>    &lt;meta charset="<mark class="important">UTF-8</mark>"&gt;</code>
-            <code>    &lt;link rel="stylesheet" href="screen.css"&gt;</code>
-            <code>    &lt;script src="script.js"&gt;&lt;/script&gt;</code>
-            <code><mark>&lt;/head&gt;</mark></code>
-        </pre>
-    </section>
+        <code>@Injectable({</code>
+        <code>  <mark>providedIn: 'root'</mark></code>
+        <code>})</code>
+        <code>export class StudentService {</code>
+        <code>  constructor() { }</code>
+        <code>}</code>
+      </pre>
+      <ul class="next">При значения providedIn:
+        <li><code>'root'</code> cервис доступен во всём приложении</li>
+        <li><code>MyModule</code> cервис доступен в модуле <i>MyModule</i></li>
+      </ul>
+    </section>    
 
     <section class="slide">
-      <h2>Highlighted Code Lines</h2>
+      <h2>@NgModule()</h2>
       <pre>
-            <code>&lt;html lang="en"&gt;</code>
-            <code class="mark">&lt;head&gt; <span class="comment">&lt;!--Comment--&gt;</span></code>
-            <code>    &lt;title&gt;Shower&lt;/title&gt;</code>
-            <code>    &lt;meta charset="<mark class="important">UTF-8</mark>"&gt;</code>
-            <code>    &lt;link rel="stylesheet" href="screen.css"&gt;</code>
-            <code>    &lt;script src="script.js"&gt;&lt;/script&gt;</code>
-            <code class="mark">&lt;/head&gt;</code>
-        </pre>
-    </section>
+        <code>@NgModule({</code>
+        <code>  declarations: [ MyComponent ],</code>
+        <code>  imports: [</code>
+        <code>    FirstModule,</code>
+        <code>    SecondModule</code>
+        <code>  ],</code>
+        <code class="next">  providers: [ <mark class="important">StudentService</mark> ]</code>
+        <code>})</code>
+        <code>export class MyModule { }</code>
+      </pre>
+    </section>    
 
     <section class="slide">
-      <h2>Hidden Code Steps</h2>
+      <h2>@Component()</h2>
       <pre>
-            <code class="next">&lt;html lang="en"&gt;</code>
-            <code class="next"><mark>&lt;head&gt;</mark> <span class="comment">&lt;!--Comment--&gt;</span></code>
-            <code class="next">    &lt;title&gt;Shower&lt;/title&gt;</code>
-            <code class="next">    &lt;meta charset="<mark class="important">UTF-8</mark>"&gt;</code>
-            <code class="next">    &lt;link rel="stylesheet" href="screen.css"&gt;</code>
-            <code class="next">    &lt;script src="script.js"&gt;&lt;/script&gt;</code>
-            <code class="next"><mark>&lt;/head&gt;</mark></code>
-        </pre>
+        <code>@Component({</code>
+        <code>  selector: 'app-room',</code>
+        <code>  templateUrl: './room.component.html',</code>
+        <code>  styleUrls: ['./room.component.scss']</code>
+        <code class="next">  providers: [ <mark class="important">StudentService</mark> ]</code>
+        <code>})</code>
+        <code>export class RoomComponent {</code>
+        <code>  constructor(private _vasya: <mark>StudentService</mark>) { }</code>
+        <code>}</code>
+      </pre>
     </section>
 
-    <section class="slide">
-      <h2>Highlighted Code Steps</h2>
-      <pre>
-            <code class="mark next">&lt;html lang="en"&gt;</code>
-            <code>&lt;head&gt; <span class="comment">&lt;!--Comment--&gt;</span></code>
-            <code class="mark next">    &lt;title&gt;Shower&lt;/title&gt;</code>
-            <code>    &lt;meta charset="<mark class="important">UTF-8</mark>"&gt;</code>
-            <code class="mark next">    &lt;link rel="stylesheet" href="screen.css"&gt;</code>
-            <code>    &lt;script src="script.js"&gt;&lt;/script&gt;</code>
-            <code class="mark next">&lt;/head&gt;</code>
-        </pre>
-    </section>
-
-    <section class="slide">
-      <h2>Cover</h2>
-      <figure>
-        <img
-          class="cover"
-          src="pictures/exact.svg"
-          alt="Picture placeholder."
-        />
-        <figcaption class="copyright top">
-          Copyright © 2018 <a href="">Yours Truly</a>, Famous Inc.
-        </figcaption>
-        <figcaption class="copyright right">
-          Copyright © 2018 <a href="">Yours Truly</a>, Famous Inc.
-        </figcaption>
-        <figcaption class="copyright bottom">
-          Copyright © 2018 <a href="">Yours Truly</a>, Famous Inc.
-        </figcaption>
-      </figure>
-    </section>
-
-    <section class="slide">
-      <h2>List Navigation</h2>
-      <ol>
-        <li>Ennui keffiyeh thundercats</li>
-        <li class="next">Jean shorts biodiesel</li>
-        <li class="next">Terry richardson, swag blog</li>
-        <li class="next">Locavore umami vegan helvetica</li>
-        <li class="next">Fingerstache kale chips</li>
-      </ol>
-      <p class="next">Before they sold out master</p>
-    </section>
-
-    <section class="slide"><h2 class="shout">The End</h2></section>
+    <section class="slide"><h2 class="shout">Спасибо за внимание</h2></section>
 
     <div class="progress"></div>
 
